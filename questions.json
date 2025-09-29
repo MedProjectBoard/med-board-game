@@ -1,0 +1,17 @@
+[
+  {
+    "q": "What is the normal resting heart rate in adults?",
+    "options": ["40-60 bpm", "60-100 bpm", "100-140 bpm"],
+    "correct": 1
+  },
+  {
+    "q": "Which vitamin deficiency causes scurvy?",
+    "options": ["Vitamin C", "Vitamin D", "Vitamin B12"],
+    "correct": 0
+  },
+  {
+    "q": "Which artery is most commonly affected in an MI?",
+    "options": ["Left anterior descending", "Radial", "Femoral"],
+    "correct": 0
+  }
+]

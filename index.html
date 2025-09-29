@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Medical Board Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f7f7f7;
+    }
+    #board {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-template-rows: repeat(5, 60px);
+      gap: 5px;
+      justify-content: center;
+      margin: 20px auto;
+      width: max-content;
+    }
+    .tile {
+      width: 60px;
+      height: 60px;
+      background: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    .player {
+      background: red;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+    #question-box {
+      margin-top: 20px;
+      padding: 15px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      display: none;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>🩺 Medical Board Game</h1>
+  <div id="board"></div>
+  <button id="roll-btn">🎲 Roll Dice</button>
+  <p id="status"></p>
+
+  <div id="question-box">
+    <h3 id="question-text"></h3>
+    <div id="answers"></div>
+  </div>
+
+  <script>
+    // === Board Setup ===
+    const board = document.getElementById("board");
+    const status = document.getElementById("status");
+    const rollBtn = document.getElementById("roll-btn");
+    const questionBox = document.getElementById("question-box");
+    const questionText = document.getElementById("question-text");
+    const answersDiv = document.getElementById("answers");
+
+    const tiles = [];
+    const size = 25; // 5x5 board
+    for (let i = 0; i < size; i++) {
+      const tile = document.createElement("div");
+      tile.classList.add("tile");
+      tile.innerText = i + 1;
+      board.appendChild(tile);
+      tiles.push(tile);
+    }
+
+    // Player token
+    const player = document.createElement("div");
+    player.classList.add("player");
+    tiles[0].appendChild(player);
+
+    let position = 0;
+
+    // === Questions ===
+    const questions = [
+      {
+        q: "What is the normal resting heart rate in adults?",
+        options: ["40-60 bpm", "60-100 bpm", "100-140 bpm"],
+        correct: 1
+      },
+      {
+        q: "Which vitamin deficiency causes scurvy?",
+        options: ["Vitamin C", "Vitamin D", "Vitamin B12"],
+        correct: 0
+      },
+      {
+        q: "Which artery is commonly affected in an MI?",
+        options: ["Left anterior descending", "Radial", "Femoral"],
+        correct: 0
+      }
+    ];
+
+    function askQuestion() {
+      const q = questions[Math.floor(Math.random() * questions.length)];
+      questionText.textContent = q.q;
+      answersDiv.innerHTML = "";
+
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => {
+          if (i === q.correct) {
+            alert("✅ Correct!");
+          } else {
+            alert("❌ Wrong! The correct answer was: " + q.options[q.correct]);
+          }
+          questionBox.style.display = "none";
+        };
+        answersDiv.appendChild(btn);
+      });
+
+      questionBox.style.display = "block";
+    }
+
+    // === Dice Roll ===
+    rollBtn.onclick = () => {
+      const roll = Math.floor(Math.random() * 6) + 1;
+      status.textContent = "You rolled a " + roll;
+      position = Math.min(position + roll, size - 1);
+
+      // Move player
+      tiles.forEach(t => t.innerHTML = t.innerHTML.replace("🔴", ""));
+      tiles[position].appendChild(player);
+
+      // Ask a question
+      askQuestion();
+
+      // Check win
+      if (position === size - 1) {
+        alert("🎉 You reached the end of the board! Game over.");
+        rollBtn.disabled = true;
+      }
+    };
+  </script>
+</body>
+</html>
