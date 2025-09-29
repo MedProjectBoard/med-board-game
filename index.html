@@ -67,34 +67,6 @@
   </div>
 
   <script>
-    // === Board Setup ===
-    const board = document.getElementById("board");
-    const status = document.getElementById("status");
-    const rollBtn = document.getElementById("roll-btn");
-    const questionBox = document.getElementById("question-box");
-    const questionText = document.getElementById("question-text");
-    const answersDiv = document.getElementById("answers");
-
-    const tiles = [];
-    const size = 25; // 5x5 board
-    for (let i = 0; i < size; i++) {
-      const tile = document.createElement("div");
-      tile.classList.add("tile");
-      tile.innerText = i + 1;
-      board.appendChild(tile);
-      tiles.push(tile);
-    }
-
-    // Player token
-    const player = document.createElement("div");
-    player.classList.add("player");
-    tiles[0].appendChild(player);
-
-    let position = 0;
-
-    // === Questions ===
-    let questions = [];
-
     // Load questions from questions.json
 fetch("questions.json")
   .then(response => response.json())
@@ -130,6 +102,65 @@ function askQuestion() {
 
   questionBox.style.display = "block";
 }
+
+// Function to choose categories
+function chooseCategories() {
+  const categories = [...new Set(questions.map(q => q.category))];
+  selectedCategories = prompt(
+    "Choose categories (comma separated): " + categories.join(", ")
+  )
+    .split(",")
+    .map(c => c.trim());
+}
+
+    // === Board Setup ===
+    const board = document.getElementById("board");
+    const status = document.getElementById("status");
+    const rollBtn = document.getElementById("roll-btn");
+    const questionBox = document.getElementById("question-box");
+    const questionText = document.getElementById("question-text");
+    const answersDiv = document.getElementById("answers");
+
+    const tiles = [];
+    const size = 25; // 5x5 board
+    for (let i = 0; i < size; i++) {
+      const tile = document.createElement("div");
+      tile.classList.add("tile");
+      tile.innerText = i + 1;
+      board.appendChild(tile);
+      tiles.push(tile);
+    }
+
+   // Function to generate board tiles
+function generateBoard() {
+  const tiles = [];
+  const categoryColors = {
+    "Physiology": "lightblue",
+    "Nutrition": "lightgreen",
+    "Cardiology": "lightcoral"
+  };
+
+  for (let i = 0; i < 25; i++) {
+    const tile = document.createElement("div");
+    tile.classList.add("tile");
+
+    // Assign category from selectedCategories (simple pattern)
+    const cat = selectedCategories[i % selectedCategories.length];
+    tile.dataset.category = cat;
+    tile.style.backgroundColor = categoryColors[cat];
+    tile.innerText = i + 1;
+
+    board.appendChild(tile);
+    tiles.push(tile);
+  }
+
+  // Place player token on first tile
+  const player = document.createElement("div");
+  player.classList.add("player");
+  tiles[0].appendChild(player);
+
+    // === Questions ===
+    let questions = [];
 
     // === Dice Roll ===
     rollBtn.onclick = () => {
